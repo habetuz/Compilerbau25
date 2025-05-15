@@ -2,6 +2,10 @@ package com.compiler.ast;
 
 import java.io.OutputStreamWriter;
 
+import com.compiler.CompileEnvIntf;
+import com.compiler.InstrIntf;
+import com.compiler.instr.InstrMultDiv;
+
 public class ASTMulDivExprNode extends ASTExprNode {
     ASTExprNode m_operand0;
     ASTExprNode m_operand1;
@@ -45,5 +49,14 @@ public class ASTMulDivExprNode extends ASTExprNode {
             throw new Exception("Expected operator type MUL or DIV, got " + operator);
         }
 
+    }
+
+    @Override
+    public InstrIntf codegen(CompileEnvIntf env) {
+        InstrIntf operand0 = m_operand0.codegen(env);
+        InstrIntf operand1 = m_operand1.codegen(env);
+        InstrIntf mulDivInstr = new InstrMultDiv(m_operator, operand0, operand1);
+        env.addInstr(mulDivInstr);
+        return mulDivInstr;
     }
 }
